@@ -25,7 +25,7 @@ const TeacherDashboard = () => {
       window.location.href =
         `https://auth.calendly.com/oauth/authorize` +
         `?client_id=${client_id}` +
-        `&redirectUri=${redirectUri}` +
+        `&redirectUri=${encodeURIComponent(redirectUri)}` +
         `&response_type=${responseType}`;
     } else {
       setEventsData(datas);
