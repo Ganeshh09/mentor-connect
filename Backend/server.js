@@ -38,23 +38,15 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(cookieParser());
 
-// MongoDB Connection
-const Mongoose_key = process.env.MONGOOSE_KEY;
-mongoose.connect(Mongoose_key, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-// ====================== Student Schema ======================
-const Students = mongoose.model("Students", {
-  name: String,
-  email: String,
-  password: String,
-  profession: String,
-  degree: String,
-  passingYear: Number,
-  skills_arr: Array,
-});
+// connection of mongoose 
+const Mongoose_key = process.env.Mongoose_key;
+ mongoose.connect(Mongoose_key); 
+ const Students = mongoose.model("Students", 
+  { name: { type: String, },
+   email: { type: String, },
+    password: { type: String, },
+     profession: { type: String, },
+      degree: { type: String, }, passingYear: Number, skills_arr: { type: Array, }, });
 
 // Sign-up Student
 app.post("/sign-up-student", async (req, res) => {
