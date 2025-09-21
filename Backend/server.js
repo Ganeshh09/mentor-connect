@@ -497,7 +497,7 @@ app.get("/check-teacher-cookie", (req, res) => {
   }
 });
 
-app.post("/get-data_OAuth", async (req, res) => {
+app.post("/api/get-data_OAuth", async (req, res) => {
   const code = req.body.code;
   const client_id = process.env.client_id;
   const client_secret = process.env.client_secret;

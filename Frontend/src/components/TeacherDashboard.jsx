@@ -19,7 +19,7 @@ const TeacherDashboard = () => {
     const datas = location.state || null;
     if (!datas) {
       const client_id = "WevYWWkis8MWNt14XSQn3JCCksGG72lmRM613IDiaxk";
-    const redirect_uri = "https://mentor-connect-lake.vercel.app/get-data_OAuth";
+    const redirect_uri = "https://mentor-connect-lake.vercel.app/api/get-data_OAuth";
     const response_type = "code";
 
     const authUrl = `https://auth.calendly.com/oauth/authorize?client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&response_type=${response_type}`;
