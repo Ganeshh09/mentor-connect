@@ -13,7 +13,7 @@ export default function Chatbot() {
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     const response = await axios.post(
-      "http://localhost:5000/chat-bot",
+      "https://mentor-connect-api.onrender.com/chat-bot",
       { query: input },
       { withCredentials: true }
     );

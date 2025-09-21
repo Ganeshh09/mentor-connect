@@ -12,7 +12,7 @@ const Student_profile = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await axios.get("http://localhost:5000/get-skills", {
+      const response = await axios.get("https://mentor-connect-api.onrender.com/get-skills", {
         withCredentials: true,
       });
       setSkills(response.data.skills_arr);
@@ -26,7 +26,7 @@ const Student_profile = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:5000/logout", { withCredentials: true });
+      await axios.get("https://mentor-connect-api.onrender.com/logout", { withCredentials: true });
       navigate("/", { state: { loggedOut: true }, replace: true });
     } catch (err) {
       console.error("Error logging out", err);

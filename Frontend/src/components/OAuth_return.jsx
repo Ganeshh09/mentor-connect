@@ -20,7 +20,7 @@ const OAuth_return = () => {
     modifiedcode = code.split("=")[1];
     const data = async () => {
       const response = await axios.post(
-        "http://localhost:5000/get-data_OAuth",
+        "https://mentor-connect-api.onrender.com/get-data_OAuth",
         { code: modifiedcode },
         {
           withCredentials: true,
@@ -36,7 +36,7 @@ const OAuth_return = () => {
     if (!token) return;
     const newdata = async () => {
       const response2 = await axios.post(
-        "http://localhost:5000/get-upcoming-events",
+        "https://mentor-connect-api.onrender.com/get-upcoming-events",
         { token, ownerlink },
         {
           withCredentials: true,

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { useNavigate, useParams } from "react-router-dom";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://mentor-connect-api.onrender.com");
 
 const Message = () => {
   const [messages, setMessages] = useState([]);
@@ -28,7 +28,7 @@ const Message = () => {
     const check_cookie = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:5000/check-cookie",
+          "https://mentor-connect-api.onrender.com/check-cookie",
           {},
           { withCredentials: true }
         );
@@ -44,7 +44,7 @@ const Message = () => {
     };
 
     const fetchMessages = async () => {
-  const response = await axios.get(`http://localhost:5000/get-messages/${roomId}`, {
+  const response = await axios.get(`https://mentor-connect-api.onrender.com/get-messages/${roomId}`, {
     withCredentials: true,
   });
   setMessages(response.data);
@@ -57,7 +57,7 @@ const Message = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const userinfo = await axios.post(
-        "http://localhost:5000/info-for-message",
+        "https://mentor-connect-api.onrender.com/info-for-message",
         {},
         { withCredentials: true }
       );

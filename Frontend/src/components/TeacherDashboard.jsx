@@ -19,7 +19,7 @@ const TeacherDashboard = () => {
     const datas = location.state || null;
     if (!datas) {
       const client_id = "WevYWWkis8MWNt14XSQn3JCCksGG72lmRM613IDiaxk";
-      const redirectUri = "http://localhost:5173/auth/callback";
+      const redirectUri = "https://mentor-connect-lake.vercel.app/auth/callback";
       const responseType = "code";
 
       window.location.href =
@@ -36,7 +36,7 @@ const TeacherDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/get-info", {
+        const response = await axios.get("https://mentor-connect-api.onrender.com/get-info", {
           withCredentials: true,
         });
         setName(response.data.name);
@@ -57,7 +57,7 @@ const TeacherDashboard = () => {
   // Logout
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:5000/logout", { withCredentials: true });
+      await axios.get("https://mentor-connect-api.onrender.com/logout", { withCredentials: true });
       navigate("/", { state: { loggedOut: true }, replace: true });
     } catch (err) {
       console.error("Error logging out", err);

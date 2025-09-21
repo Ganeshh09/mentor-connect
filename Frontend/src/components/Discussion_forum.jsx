@@ -11,7 +11,7 @@ const Discussion_forum = () => {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/get-rooms", {
+        const response = await axios.get("https://mentor-connect-api.onrender.com/get-rooms", {
           withCredentials: true,
         });
         setRooms(response.data);
@@ -27,7 +27,7 @@ const Discussion_forum = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/validation-for-forum",
+        "https://mentor-connect-api.onrender.com/validation-for-forum",
         { query: roomName },
         { withCredentials: true }
       );

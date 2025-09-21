@@ -19,14 +19,14 @@ const jwtpassword = process.env.jwtpassword;
 const server = http.createServer(app);
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://mentor-connect-lake.vercel.app",
     credentials: true,
   })
 );
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://mentor-connect-lake.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -501,7 +501,7 @@ app.post("/get-data_OAuth", async (req, res) => {
   const code = req.body.code;
   const client_id = process.env.client_id;
   const client_secret = process.env.client_secret;
-  const redirect_uri = "http://localhost:5173/auth/callback";
+  const redirect_uri = "https://mentor-connect-lake.vercel.app/auth/callback";
 
   try {
     const formdata = new URLSearchParams();

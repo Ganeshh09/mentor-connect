@@ -13,14 +13,14 @@ export default function MainPage() {
 
   const fetchAuthStatus = () => {
     axios
-      .get("http://localhost:5000/check-student-cookie", {
+      .get("https://mentor-connect-api.onrender.com/check-student-cookie", {
         withCredentials: true,
       })
       .then((res) => setShowProfileSymbol(res.data))
       .catch(() => setShowProfileSymbol(""));
 
     axios
-      .get("http://localhost:5000/check-teacher-cookie", {
+      .get("https://mentor-connect-api.onrender.com/check-teacher-cookie", {
         withCredentials: true,
       })
       .then((res) => setShowDashboardSymbol(res.data))
@@ -30,7 +30,7 @@ export default function MainPage() {
   // 🔹 Unified Logout Function (works for both teacher & student)
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:5000/logout", { withCredentials: true });
+      await axios.get("https://mentor-connect-api.onrender.com/logout", { withCredentials: true });
       setShowProfileSymbol("");
       setShowDashboardSymbol("");
       navigate("/", { state: { loggedOut: true }, replace: true });

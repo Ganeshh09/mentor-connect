@@ -29,7 +29,7 @@ export default function Signup_student() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/sign-up-student", {
+      const response = await axios.post("https://mentor-connect-api.onrender.com/sign-up-student", {
         name,
         email,
         password,

@@ -35,7 +35,7 @@ export default function Signup_teacher() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/sign-up-teacher", {
+      const response = await axios.post("https://mentor-connect-api.onrender.com/sign-up-teacher", {
         name,
         image,
         email,
