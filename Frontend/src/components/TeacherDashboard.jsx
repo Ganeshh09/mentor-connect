@@ -19,7 +19,7 @@ const TeacherDashboard = () => {
     const datas = location.state || null;
     if (!datas) {
       const client_id = "WevYWWkis8MWNt14XSQn3JCCksGG72lmRM613IDiaxk";
-      const redirectUri = "https://mentor-connect-lake.vercel.app/auth/callback";
+      const redirectUri = "https://mentor-connect-lake.vercel.app/get-data_OAuth";
       const responseType = "code";
 
       window.location.href =
