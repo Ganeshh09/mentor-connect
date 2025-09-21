@@ -44,7 +44,7 @@ function App() {
           <Route path="/workings" element={<How_it_works />} />
           <Route
             path="/teacher-dashboard"
-            element={<TeacherDashboard username={"Rahul"} />}
+            element={<TeacherDashboard/>}
           />
           <Route path="/admin-panel" element={<AdminPanel />} />
         </Routes>

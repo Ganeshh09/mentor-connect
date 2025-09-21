@@ -501,14 +501,14 @@ app.post("/get-data_OAuth", async (req, res) => {
   const code = req.body.code;
   const client_id = process.env.client_id;
   const client_secret = process.env.client_secret;
-  const redirect_uri = process.env.redirectUri;
+  const redirectUri = process.env.redirectUri;
 
   try {
     const formdata = new URLSearchParams();
     formdata.append("code", code);
     formdata.append("client_id", client_id);
     formdata.append("client_secret", client_secret);
-    formdata.append("redirect_uri", redirect_uri);
+    formdata.append("redirectUri", redirectUri);
     formdata.append("grant_type", "authorization_code");
     const response = await axios.post(
       "https://auth.calendly.com/oauth/token",
