@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const TeacherDashboard = ({ username }) => {
   const navigate = useNavigate();
@@ -10,19 +10,32 @@ const TeacherDashboard = ({ username }) => {
   const [image, setimage] = useState("");
   const [session, setsession] = useState("");
   const [totalstudents, settotalstudents] = useState("");
-  const [sessioninfo, setsessioninfo] = useState([]);
-  const [uri, seturi] = useState([]);
-  const [inviteename, setinviteename] = useState([]);
-  const [guestname, setguestname] = useState([]);
-  let date_in_ist = 0;
-  const [invitee, setinvitee] = useState("");
   const [data, setdata] = useState([]);
-  const count = 0;
 
   const location = useLocation();
 
-  const handleclick = () => {
+  // ✅ Home button
+  const handleHome = () => {
     navigate("/");
+  };
+
+  // ✅ Logout button
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "https://mentor-connect-api.onrender.com/logout",
+        {},
+        { withCredentials: true }
+      );
+      navigate("/"); // go back to home after logout
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
+
+  // ✅ Profile button
+  const handleProfile = () => {
+    navigate("/teacher-profile");
   };
 
   useEffect(() => {
@@ -34,7 +47,6 @@ const TeacherDashboard = ({ username }) => {
       const client_id = "WevYWWkis8MWNt14XSQn3JCCksGG72lmRM613IDiaxk";
       const redirectUri = "https://mentor-connect-lake.vercel.app/get-data_OAuth";
       const responseType = "code";
-      //const oauthUrl = `https://auth.calendly.com/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}`;
       window.location.href =
         `https://auth.calendly.com/oauth/authorize` +
         `?client_id=${client_id}` +
@@ -45,9 +57,10 @@ const TeacherDashboard = ({ username }) => {
 
   useEffect(() => {
     const data = async () => {
-      const response = await axios.get("https://mentor-connect-api.onrender.com/get-info", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://mentor-connect-api.onrender.com/get-info",
+        { withCredentials: true }
+      );
       setname(response.data.name);
       setemail(response.data.email);
       setimage(response.data.image_link);
@@ -60,21 +73,37 @@ const TeacherDashboard = ({ username }) => {
   return (
     <>
       <div className="flex bg-gray-100 ">
+        {/* Sidebar */}
         <div className="w-23 lg:w-64 bg-blue-900 text-white">
-          <div className=" mt-5 flex items-center justify-center lg:justify-start">
-            <h1 className="hidden lg:block text-3xl font-bold">
+          <div className="mt-5 flex flex-col items-center lg:items-start">
+            <h1 className="hidden lg:block text-3xl font-bold mb-4">
               Mentor's Connect
             </h1>
-            <div className="">
-              <button
-                className="bg-red-700 text-white h-10 p-2 rounded-xl cursor-pointer m-5 hover:bg-red-800 "
-                onClick={handleclick}
-              >
-                Home
-              </button>
-            </div>
+
+            <button
+              className="bg-red-700 text-white h-10 px-4 rounded-xl cursor-pointer mb-3 hover:bg-red-800"
+              onClick={handleHome}
+            >
+              Home
+            </button>
+
+            <button
+              className="bg-green-600 text-white h-10 px-4 rounded-xl cursor-pointer mb-3 hover:bg-green-700"
+              onClick={handleProfile}
+            >
+              Profile
+            </button>
+
+            <button
+              className="bg-gray-700 text-white h-10 px-4 rounded-xl cursor-pointer hover:bg-gray-800"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
           </div>
         </div>
+
+        {/* Main Section */}
         <div className="flex-1 overflow-auto">
           <header className="bg-white shadow-sm">
             <div className="flex justify-between items-center px-4 py-3">
@@ -101,6 +130,8 @@ const TeacherDashboard = ({ username }) => {
               </div>
             </div>
           </header>
+
+          {/* Stats */}
           <div className="text-black text-xl flex gap-6 bg-white rounded-xl shadow-md p-8 justify-evenly border-t-2 border-gray-300">
             <div className="pr-6 border-r-2 border-gray-300 font-semibold text-gray-700 ">
               👥 Total Students Registered = {totalstudents}
@@ -113,6 +144,7 @@ const TeacherDashboard = ({ username }) => {
             </div>
           </div>
 
+          {/* Events */}
           <div className="text-white h-screen p-6 overflow-auto">
             <div className="max-w-4xl mx-auto space-y-6">
               {data.location?.map((_, index) => (
@@ -168,15 +200,4 @@ const TeacherDashboard = ({ username }) => {
   );
 };
 
-const StatCard = ({ icon, title, value }) => {
-  return (
-    <div className="bg-white rounded-lg shadow p-4">
-      <div className="flex items-center mb-2">
-        <span>{icon}</span>
-        <h3 className="ml-2 font-medium">{title}</h3>
-      </div>
-      <p className="text-2xl font-semibold">{value}</p>
-    </div>
-  );
-};
 export default TeacherDashboard;
