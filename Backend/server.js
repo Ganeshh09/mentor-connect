@@ -497,11 +497,11 @@ app.get("/check-teacher-cookie", (req, res) => {
   }
 });
 
-app.get("/get-data_OAuth", async (req, res) => {
+app.post("/get-data_OAuth", async (req, res) => {
   const code = req.body.code;
   const client_id = process.env.client_id;
   const client_secret = process.env.client_secret;
-  const redirect_uri = "https://mentor-connect-api.onrender.com/get-data_OAuth";
+  const redirect_uri = "https://mentor-connect-lake.vercel.app/get-data_OAuth";
 
   try {
     const formdata = new URLSearchParams();
