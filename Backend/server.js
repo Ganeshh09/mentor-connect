@@ -501,7 +501,7 @@ app.post("/get-data_OAuth", async (req, res) => {
   const code = req.body.code;
   const client_id = process.env.client_id;
   const client_secret = process.env.client_secret;
-  const redirect_uri = process.env.redirectUri;
+  const redirect_uri = "https://mentor-connect-lake.vercel.app/api/get-data_OAuth";
 
   try {
     const formdata = new URLSearchParams();
@@ -529,7 +529,3 @@ app.post("/get-data_OAuth", async (req, res) => {
     res.status(500).json({ error: error.response?.data || "Unknown error" });
   }
 });
-/* app.listen(port, () => {
-  console.log(`hello , server is up at ${port}`);
-});
- */
