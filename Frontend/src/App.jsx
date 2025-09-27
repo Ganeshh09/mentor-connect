@@ -32,7 +32,6 @@ function App() {
           <Route path="/student-login" element={<StudentLogin />} />
           <Route path="/schedule-meet" element={<Calendly />} />
           <Route path="/mentors" element={<SearchPage />} />
-          <Route path="/upload" element={<PdfUpload />} />
           <Route path="/mentee-profile" element={<Student_profile />} />
           <Route path="/working" element={<How_it_works />} />
           
