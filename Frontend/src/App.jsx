@@ -8,7 +8,6 @@ import Signup_student from "./components/Signup_student";
 import Signup_teacher from "./components/Signup_teacher";
 import Calendly from "./components/Calendly";
 import SearchPage from "./components/SearchPage";
-import PdfUpload from "./components/PdfUpload";
 import TeacherDashboard from "./components/TeacherDashboard";
 import Student_profile from "./components/Student_profile";
 import How_it_works from "./components/How_it_works";

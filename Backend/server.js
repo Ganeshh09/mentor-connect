@@ -302,37 +302,37 @@ app.post("/schedule-meet", (req, res) => {
   res.send(`https://calendly.com/${meeturl}/`);
 });
 
-import multer from "multer";
+// import multer from "multer";
 
-const storage = multer.diskStorage({
-  destination: "./uploads/",
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: "./uploads/",
+//   filename: (req, file, cb) => {
+//     cb(
+//       null,
+//       file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+//     );
+//   },
+// });
 
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "application/pdf") {
-    cb(null, true);
-  } else {
-    cb(new Error("Only PDFs are allowed!"), false);
-  }
-};
+// const fileFilter = (req, file, cb) => {
+//   if (file.mimetype === "application/pdf") {
+//     cb(null, true);
+//   } else {
+//     cb(new Error("Only PDFs are allowed!"), false);
+//   }
+// };
 
-const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-});
+// const upload = multer({
+//   storage: storage,
+//   fileFilter: fileFilter,
+// });
 
-app.post("/upload", upload.single("pdf"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "Please upload a PDF file!" });
-  }
-  res.json({ message: "File uploaded successfully!", file: req.file });
-});
+// app.post("/upload", upload.single("pdf"), (req, res) => {
+//   if (!req.file) {
+//     return res.status(400).json({ message: "Please upload a PDF file!" });
+//   }
+//   res.json({ message: "File uploaded successfully!", file: req.file });
+// });
 
 const MernMessage = mongoose.model("MernMessage", {
   roomid: String,
