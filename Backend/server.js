@@ -19,14 +19,14 @@ const jwtpassword = process.env.jwtpassword;
 const server = http.createServer(app);
 app.use(
   cors({
-    origin: "https://mentor-connect-lake.vercel.app"||"https://mentor-connect-m4z4rz2ey-ganeshs-projects-4d8f66c3.vercel.app",
+    origin: "https://mentor-connect-lake.vercel.app",
     credentials: true
   })
 );
 
 const io = new Server(server, {
   cors: {
-    origin: "https://mentor-connect-lake.vercel.app"||"https://mentor-connect-m4z4rz2ey-ganeshs-projects-4d8f66c3.vercel.app",
+    origin: "https://mentor-connect-lake.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
   },
