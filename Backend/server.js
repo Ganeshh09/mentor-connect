@@ -21,7 +21,7 @@ const server = http.createServer(app);
 app.use(
   cors({
     origin: "https://mentor-connect-lake.vercel.app",
-    credentials: true
+    credentials: true,
   })
 );
 
