@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import mongoose, { Schema } from "mongoose";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import cors from "cors";
-import { type } from "os";
 import jwt from "jsonwebtoken";
 import http from "http";
 import { Server } from "socket.io";
