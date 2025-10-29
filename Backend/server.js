@@ -228,7 +228,7 @@ const aiMessage = mongoose.model("AiMessages", {
 const myAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function generateResponse(query) {
-  const model = myAi.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+  const model = myAi.getGenerativeModel({ model: "gemini-2.5-flash" });
   const prompt = `Explain the following text like a friendly mentor teaching a beginner programmer. Make the explanation clear, simple, and encouraging. Use short paragraphs and bullet points where helpful. Avoid using markdown formatting like bold or backticks. Keep the tone warm and motivating, and include a brief intro, key points, and future possibilities. Limit the response to around 150 words. use appropriate line breaks for better readability. dont use "*" . keep it clean and readable. follow chatgpt like formatting for the answer.keep proper spacing and line breaks. use appropriate emojis to make it more interactive. explain the context in a professioal mentor tone. use arrows in a required place , mark bold the important terms . If the user is asking is it right to learn a specific skill , motivate him/her with the exopected time to learn , prerequisites and expected stipend or salary . here is the Text to explain: ${query} `;
   const result = await model.generateContent({
     contents: [{ role: "user", parts: [{ text: prompt }] }],
