@@ -22,7 +22,9 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   "https://mentor-connect-lake.vercel.app",
-  "http://localhost:5173" // keep this for local testing
+  "http://localhost:5173",
+  
+ // keep this for local testing
 ];
 
 app.use(
@@ -236,25 +238,36 @@ async function generateResponse(query) {
 }
 
 app.post("/chat-bot", async (req, res) => {
-  const query = req.body.query;
-  const token = req.cookies.user_token;
-  if (token) {
-    const decode_token = jwt.decode(token);
-    const decoded_email = decode_token.email;
-    let all_query = "";
-    all_query += query + "\n";
+  try {
+    const query = req.body.query;
+    const token = req.cookies.user_token;
+
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized: No token provided" });
+    }
+
+    const decoded = jwt.decode(token);
+    const decoded_email = decoded?.email;
+
+    if (!decoded_email) {
+      return res.status(400).json({ error: "Invalid token" });
+    }
+
     const result = await generateResponse(query);
-    const newchat = new aiMessage({
+
+    await new aiMessage({
       email: decoded_email,
       prompt: query,
       airesponse: result,
-    });
-    newchat.save();
-    res.send(result);
-  } else {
-    res.send("error");
+    }).save();
+
+    res.status(200).send(result);
+  } catch (err) {
+    console.error("Chatbot error:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 // chatbot review
 
@@ -381,10 +394,32 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {});
 });
 
-app.get("/get-messages", async (req, res) => {
-  const messages = await MernMessage.find();
-  res.send(messages);
+// app.get("/get-messages", async (req, res) => {
+//   const messages = await MernMessage.find();
+//   res.send(messages);
+// });
+app.get("/get-messages/:roomId", async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const messages = await MernMessage.find({ roomId });
+    res.json(messages);
+  } catch (err) {
+    console.error("Error fetching room messages:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
+
+app.get("/get-rooms", async (req, res) => {
+  try {
+    const rooms = await MernMessage.distinct("roomId");
+    res.json(rooms);
+  } catch (err) {
+    console.error("Error fetching rooms:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 
 app.post("/info-for-message", async (req, res) => {
   const email_token = req.cookies.user_token;
@@ -413,9 +448,7 @@ app.post("/validation-for-forum", async (req, res) => {
   }
 });
 
-server.listen(port, () => {
-  console.log(`server connected successfully on ${port}`);
-});
+
 
 
 // logout
@@ -542,4 +575,9 @@ app.post("/get-data_OAuth", async (req, res) => {
     );
     res.status(500).json({ error: error.response?.data || "Unknown error" });
   }
+});
+
+
+server.listen(port, () => {
+  console.log(`server connected successfully on ${port}`);
 });
