@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose, { Schema } from "mongoose";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import http from "http";
