@@ -231,17 +231,17 @@ const aiMessage = mongoose.model("AiMessages", {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function generateResponse(query) {
-  const systemInstruction = `You are a friendly mentor guiding a beginner programmer. Explain clearly and encourage them. Keep it under 150 words, use short sentences and emojis.`;
+  const systemInstruction = `You are a friendly mentor guiding a beginner programmer. 
+  Explain clearly and encourage them. Keep it under 150 words, use short sentences and emojis.`;
 
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // Combine system prompt and user query
-    const result = await model.generateContent([
-      { role: "user", parts: [{ text: systemInstruction + "\n" + query }] },
-    ]);
+    // ✅ Correct structure for SDK (use plain string, not {role, parts})
+    const prompt = `${systemInstruction}\nUser: ${query}`;
 
-    // Safely return response text
+    const result = await model.generateContent(prompt);
+
     return result.response.text();
   } catch (error) {
     console.error("Gemini API Error:", error);
