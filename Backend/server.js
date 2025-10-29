@@ -11,27 +11,40 @@ import axios from "axios";
 
 dotenv.config();
 
-const port = process.env.port || 3000;
+const port = process.env.PORT || 3000;
 
 
 
 const app = express();
 const jwtpassword = process.env.jwtpassword;
 const server = http.createServer(app);
+ 
+
+const allowedOrigins = [
+  "https://mentor-connect-lake.vercel.app",
+  "http://localhost:5173" // keep this for local testing
+];
+
 app.use(
   cors({
-    origin: "https://mentor-connect-lake.vercel.app",
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
 
+// Handle preflight requests globally (important for Render)
+app.options("*", cors());
+
+
 const io = new Server(server, {
   cors: {
-    origin: "https://mentor-connect-lake.vercel.app",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
+
 
 // middlewares
 
@@ -334,7 +347,7 @@ app.post("/schedule-meet", (req, res) => {
 // });
 
 const MernMessage = mongoose.model("MernMessage", {
-  roomid: String,
+  roomId: String,
   sender: String,
   text: String,
   timestamp: {
