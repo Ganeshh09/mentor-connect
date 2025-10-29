@@ -243,30 +243,28 @@ app.post("/chat-bot", async (req, res) => {
     const token = req.cookies.user_token;
 
     if (!token) {
-      return res.status(401).json({ error: "Unauthorized: No token provided" });
+      return res.status(401).json({ error: "User not authenticated" });
     }
 
-    const decoded = jwt.decode(token);
-    const decoded_email = decoded?.email;
-
-    if (!decoded_email) {
-      return res.status(400).json({ error: "Invalid token" });
-    }
+    const decode_token = jwt.decode(token);
+    const decoded_email = decode_token.email;
 
     const result = await generateResponse(query);
 
-    await new aiMessage({
+    const newchat = new aiMessage({
       email: decoded_email,
       prompt: query,
       airesponse: result,
-    }).save();
+    });
+    await newchat.save();
 
-    res.status(200).send(result);
-  } catch (err) {
-    console.error("Chatbot error:", err);
-    res.status(500).json({ error: "Internal server error" });
+    res.json({ response: result });
+  } catch (error) {
+    console.error("Chatbot error:", error);
+    res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });
+
 
 
 // chatbot review
