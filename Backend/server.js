@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose, { Schema } from "mongoose";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import http from "http";
@@ -227,67 +227,57 @@ const aiMessage = mongoose.model("AiMessages", {
 
 // server.js (Corrected generateResponse function)
 
-const myAi = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function generateResponse(query) {
-  // 💡 Your detailed persona and instructions go here (outside the user's query)
-  const systemInstruction = `You are a friendly mentor teaching a beginner programmer. Explain the user's text clearly, simply, and encouragingly. Use short paragraphs and line breaks for better readability. Your tone should be warm and motivating. Always include a brief introduction, key points, and future possibilities. Use appropriate emojis to make it interactive. Use professional mentor tone. If the user asks if learning a specific skill is right, motivate them with expected learning time, prerequisites, and expected stipend or salary. Do not use Markdown characters like '*' or 'bold' formatting in the output. Limit the response to around 150 words.`;
+  const systemInstruction = `You are a friendly mentor guiding a beginner programmer. Explain clearly and encourage them. Keep it under 150 words, use short sentences and emojis.`;
 
   try {
-    const model = myAi.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const result = await model.generateContent({
-      // The user's query is passed directly here
-      contents: [{ role: "user", parts: [{ text: query }] }],
-      config: {
-        // 💡 Pass the persona instructions here
-        systemInstruction: systemInstruction,
-      },
-    });
+    // Combine system prompt and user query
+    const result = await model.generateContent([
+      { role: "user", parts: [{ text: systemInstruction + "\n" + query }] },
+    ]);
 
-    return result.text;
-  } catch (e) {
-    console.error("Error during Gemini content generation:", e);
-    throw new Error("Failed to get response from the AI model.");
+    // Safely return response text
+    return result.response.text();
+  } catch (error) {
+    console.error("Gemini API Error:", error);
+    throw new Error("Failed to get AI response from Gemini");
   }
 }
 
-// server.js (Corrected /chat-bot endpoint)
-
+// ✅ /chat-bot route
 app.post("/chat-bot", async (req, res) => {
   try {
-    const query = req.body.query;
+    const { query } = req.body;
     const token = req.cookies.user_token;
 
     if (!token) {
       return res.status(401).json({ error: "User not authenticated" });
     }
 
-    // 💡 CRITICAL SECURITY FIX: Verify the token signature
-    const decoded = jwt.verify(token, jwtpassword); 
+    const decoded = jwt.verify(token, jwtpassword);
     const decoded_email = decoded.email;
 
-    // 💡 The generateResponse function now handles the API call
-    const result = await generateResponse(query);
+    const aiText = await generateResponse(query);
 
-    const newchat = new aiMessage({
+    const newChat = new aiMessage({
       email: decoded_email,
       prompt: query,
-      airesponse: result,
+      airesponse: aiText,
     });
-    await newchat.save();
+    await newChat.save();
 
-    res.json({ response: result });
+    res.json({ response: aiText });
   } catch (error) {
-    // Handle JWT errors first
-    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
-      console.error("JWT Authentication Error:", error.message);
-      return res.status(401).json({ error: "Invalid or expired user token. Please log in again." });
-    }
-
-    // Handle Gemini/Internal Server errors
-    console.error("Chatbot Internal Error:", error);
-    res.status(500).json({ error: "Internal server error. AI response failed.", details: error.message });
+    console.error("Chatbot Route Error:", error.message);
+    res.status(500).json({
+      error: "Internal server error",
+      details: error.message,
+    });
   }
 });
 
