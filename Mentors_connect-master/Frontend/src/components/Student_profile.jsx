@@ -12,14 +12,22 @@ const Student_profile = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await axios.get("https://mentor-connect-api.onrender.com/get-skills", {
-        withCredentials: true,
-      });
-      setSkills(response.data.skills_arr);
-      setEmail(response.data.email);
-      setProfession(response.data.profession);
-      setName(response.data.name);
-      setDegree(response.data.degree);
+      try {
+        const response = await axios.get(
+          "https://mentor-connect-api.onrender.com/get-skills",
+          { withCredentials: true }
+        );
+
+        const data = response.data || {};
+        setSkills(Array.isArray(data.skills_arr) ? data.skills_arr : []);
+        setEmail(data.email || "");
+        setProfession(data.profession || "");
+        setName(data.name || "");
+        setDegree(data.degree || "");
+      } catch (err) {
+        console.error("Error fetching profile data:", err);
+        setSkills([]); // fallback to avoid .length crash
+      }
     };
     getData();
   }, []);
@@ -52,8 +60,8 @@ const Student_profile = () => {
           <li>
             <button
               onClick={handleLogout}
-              className="hover:bg-white hover:text-indigo-700 transition-all px-4 py-2 rounded-lg font-medium">
-            
+              className="hover:bg-white hover:text-indigo-700 transition-all px-4 py-2 rounded-lg font-medium"
+            >
               Logout
             </button>
           </li>
@@ -84,7 +92,7 @@ const Student_profile = () => {
             <h1 className="text-gray-300 text-md mb-2">Degree : {degree}</h1>
 
             <div className="flex flex-wrap gap-2 mt-3">
-              {skills.length > 0 ? (
+              {skills?.length > 0 ? (
                 skills.map((i, index) => (
                   <div
                     key={index}
