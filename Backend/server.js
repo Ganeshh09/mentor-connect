@@ -541,21 +541,14 @@ app.post("/check-cookie", (req, res) => {
 
 app.get("/check-student-cookie", (req, res) => {
   const user_token = req.cookies.user_token;
-  if (user_token) {
-    res.send("true");
-  } else {
-    res.send("false");
-  }
+  res.json({ isStudent: !!user_token });
 });
 
 app.get("/check-teacher-cookie", (req, res) => {
   const teacher_token = req.cookies.teacher_token;
-  if (teacher_token) {
-    res.send("true");
-  } else {
-    res.send("false");
-  }
+  res.json({ isTeacher: !!teacher_token });
 });
+
 
 app.post("/get-data_OAuth", async (req, res) => {
   const code = req.body.code;

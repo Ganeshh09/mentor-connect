@@ -16,16 +16,16 @@ export default function MainPage() {
       .get("https://mentor-connect-api.onrender.com/check-student-cookie", {
         withCredentials: true,
       })
-      .then((res) => setShowProfileSymbol(res.data))
-      .catch(() => setShowProfileSymbol(""));
-
+      .then((res) => setShowProfileSymbol(res.data.isStudent))
+      .catch(() => setShowProfileSymbol(false));
     axios
       .get("https://mentor-connect-api.onrender.com/check-teacher-cookie", {
         withCredentials: true,
       })
-      .then((res) => setShowDashboardSymbol(res.data))
-      .catch(() => setShowDashboardSymbol(""));
+      .then((res) => setShowDashboardSymbol(res.data.isTeacher))
+      .catch(() => setShowDashboardSymbol(false));
   };
+
 
   // 🔹 Unified Logout Function (works for both teacher & student)
   const handleLogout = async () => {
