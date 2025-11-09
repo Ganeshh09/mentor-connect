@@ -22,7 +22,6 @@ const allowedOrigins = [
   "https://mentor-connect-lake.vercel.app",
   "http://localhost:5173",
   
- // keep this for local testing
 ];
 
 app.use((req, res, next) => {
@@ -40,7 +39,7 @@ app.use((req, res, next) => {
 });
 
 
-// Handle preflight requests globally (important for Render)
+// Handle 
 app.options("*", cors());
 
 
