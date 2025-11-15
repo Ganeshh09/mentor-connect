@@ -17,7 +17,7 @@ const port = process.env.PORT || 3000;
 
 const app = express();
 const jwtpassword = process.env.jwtpassword;
-const server = http.createServer(app);
+const server = http.createServer(app); 
  
 
 const allowedOrigins = [
@@ -34,36 +34,11 @@ app.use(
     credentials: true,
   })
 );
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://mentor-connect-lake.vercel.app");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  next();
-});
+
 
 
 // Handle preflight requests globally (important for Render)
 app.options("*", cors());
-
-
-const io = new Server(server, {
-  cors: {
-    origin: [
-      "https://mentor-connect-lake.vercel.app",
-      "http://localhost:5173"
-    ],
-    methods: ["GET", "POST"],
-    credentials: true
-  },
-  transports: ["websocket", "polling"]
-});
-
-
-
 // middlewares
 
 app.use(express.json());
@@ -73,6 +48,9 @@ app.use(cookieParser());
 // connection of mongoose
 const Mongoose_key = process.env.Mongoose_key;
 mongoose.connect(Mongoose_key);
+
+
+
 // student
 
 // signup as student
@@ -97,6 +75,21 @@ const Students = mongoose.model("Students", {
     type: Array,
   },
 });
+
+const io = new Server(server, {
+  cors: {
+    origin: [
+      "https://mentor-connect-lake.vercel.app",
+      "http://localhost:5173"
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+  },
+  transports: ["websocket"]
+});
+
+
+
 app.post("/sign-up-student", async (req, res) => {
   const name = req.body.name;
   const email = req.body.email;
