@@ -14,10 +14,10 @@ export default function Chatbot() {
     setInput("");
     const response = await axios.post(
       "https://mentor-connect-api.onrender.com/chat-bot",
-      { query: input },
+      { message: input },
       { withCredentials: true }
     );
-    const result = response.data.response;
+    const result = response.data.reply;
     const botReply = { text: result, sender: "bot" };
     setMessages((prev) => [...prev, botReply]);
   };

@@ -300,38 +300,39 @@ export const chatBot = async (req, res) => {
 
 
 
+app.post("/chat-bot", chatBot);
 
-// ✅ /chat-bot route
-app.post("/chat-bot", async (req, res) => {
-  try {
-    const { query } = req.body;
-    const token = req.cookies.user_token;
+// // ✅ /chat-bot route
+// app.post("/chat-bot", async (req, res) => {
+//   try {
+//     const { query } = req.body;
+//     const token = req.cookies.user_token;
 
-    if (!token) {
-      return res.status(401).json({ error: "User not authenticated" });
-    }
+//     if (!token) {
+//       return res.status(401).json({ error: "User not authenticated" });
+//     }
 
-    const decoded = jwt.verify(token, jwtpassword);
-    const decoded_email = decoded.email;
+//     const decoded = jwt.verify(token, jwtpassword);
+//     const decoded_email = decoded.email;
 
-    const aiText = await generateResponse(query);
+//     const aiText = await generateResponse(query);
 
-    const newChat = new aiMessage({
-      email: decoded_email,
-      prompt: query,
-      airesponse: aiText,
-    });
-    await newChat.save();
+//     const newChat = new aiMessage({
+//       email: decoded_email,
+//       prompt: query,
+//       airesponse: aiText,
+//     });
+//     await newChat.save();
 
-    res.json({ response: aiText });
-  } catch (error) {
-    console.error("Chatbot Route Error:", error.message);
-    res.status(500).json({
-      error: "Internal server error",
-      details: error.message,
-    });
-  }
-});
+//     res.json({ response: aiText });
+//   } catch (error) {
+//     console.error("Chatbot Route Error:", error.message);
+//     res.status(500).json({
+//       error: "Internal server error",
+//       details: error.message,
+//     });
+//   }
+// });
 
 
 // chatbot review
