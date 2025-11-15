@@ -78,17 +78,7 @@ const Students = mongoose.model("Students", {
   },
 });
 
-const io = new Server(server, {
-  cors: {
-    origin: [
-      "https://mentor-connect-lake.vercel.app",
-      "http://localhost:5173"
-    ],
-    methods: ["GET", "POST"],
-    credentials: true
-  },
-  transports: ["websocket"]
-});
+
 
 
 
@@ -236,6 +226,49 @@ const aiMessage = mongoose.model("AiMessages", {
   airesponse: String,
 });
 
+const io = new Server(server, {
+  cors: {
+    origin: [
+      "https://mentor-connect-lake.vercel.app",
+      "http://localhost:5173"
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+  },
+  transports: ["websocket"]
+});
+
+// SOCKET EVENTS
+io.on("connection", (socket) => {
+  console.log("Socket connected:", socket.id);
+
+  socket.on("joinroom", (roomId) => {
+    socket.join(roomId);
+  });
+
+  socket.on("message", async ({ roomId, text, sender }) => {
+    const newMessage = new MernMessage({
+      roomId,
+      text,
+      sender,
+    });
+
+    await newMessage.save();
+
+    io.to(roomId).emit("newmessage", {
+      roomId,
+      text,
+      sender,
+    });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Socket disconnected:", socket.id);
+  });
+});
+
+// ================================================================
+
 // server.js (Corrected generateResponse function)
 
 
@@ -306,26 +339,7 @@ app.get("/review", async (req, res) => {
     res.send("error , login as student first , Wait ....are you impostor ?");
   }
 });
-// predict placement
-/* {
-  app.post("/predict", (req, res) => {
-    const { cgpa, skills, internship } = req.body;
-    const skillsString = skills.join(",");
 
-    exec(
-      `python3 predict.py ${cgpa} "${skillsString}" ${internship}`,
-      (error, stdout) => {
-        if (error) {
-          console.error(`Error: ${error.message}`);
-          return res.status(500).json({ error: "Prediction failed" });
-        }
-
-        const result = JSON.parse(stdout.trim());
-        res.json(result);
-      }
-    );
-  });
-} */
 
 // mentor search
 app.get("/mentors", async (req, res) => {
@@ -351,37 +365,6 @@ app.post("/schedule-meet", (req, res) => {
   res.send(`https://calendly.com/${meeturl}/`);
 });
 
-// import multer from "multer";
-
-// const storage = multer.diskStorage({
-//   destination: "./uploads/",
-//   filename: (req, file, cb) => {
-//     cb(
-//       null,
-//       file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-//     );
-//   },
-// });
-
-// const fileFilter = (req, file, cb) => {
-//   if (file.mimetype === "application/pdf") {
-//     cb(null, true);
-//   } else {
-//     cb(new Error("Only PDFs are allowed!"), false);
-//   }
-// };
-
-// const upload = multer({
-//   storage: storage,
-//   fileFilter: fileFilter,
-// });
-
-// app.post("/upload", upload.single("pdf"), (req, res) => {
-//   if (!req.file) {
-//     return res.status(400).json({ message: "Please upload a PDF file!" });
-//   }
-//   res.json({ message: "File uploaded successfully!", file: req.file });
-// });
 
 const MernMessage = mongoose.model("MernMessage", {
   roomId: String,
@@ -393,30 +376,45 @@ const MernMessage = mongoose.model("MernMessage", {
   },
 });
 
-io.on("connection", (socket) => {
-  socket.on("joinroom", (roomId) => {
-    socket.join(roomId);
-  });
+// const io = new Server(server, {
+//   cors: {
+//     origin: [
+//       "https://mentor-connect-lake.vercel.app",
+//       "http://localhost:5173"
+//     ],
+//     methods: ["GET", "POST"],
+//     credentials: true
+//   },
+//   transports: ["websocket"]
+// });
 
-  socket.on(
-    "message",
-    async ({ roomId: roomId, text: message, sender: user }) => {
-      const newMessage = new MernMessage({
-        roomId: roomId,
-        text: message,
-        sender: user,
-      });
-      newMessage.save();
-      io.to(roomId).emit("newmessage", {
-        roomId: roomId,
-        text: message,
-        sender: user,
-      });
-    }
-  );
+// io.on("connection", (socket) => {
+//   socket.on("joinroom", (roomId) => {
+//     socket.join(roomId);
+//   });
 
-  socket.on("disconnect", () => {});
-});
+//   socket.on(
+//     "message",
+//     async ({ roomId: roomId, text: message, sender: user }) => {
+//       const newMessage = new MernMessage({
+//         roomId: roomId,
+//         text: message,
+//         sender: user,
+//       });
+//       newMessage.save();
+//       io.to(roomId).emit("newmessage", {
+//         roomId: roomId,
+//         text: message,
+//         sender: user,
+//       });
+//     }
+//   );
+
+//   socket.on("disconnect", () => {});
+// });
+// ================= SOCKET.IO SETUP (PLACE HERE) =================
+
+
 
 // app.get("/get-messages", async (req, res) => {
 //   const messages = await MernMessage.find();
