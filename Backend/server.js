@@ -270,25 +270,34 @@ io.on("connection", (socket) => {
 
 // server.js (Corrected generateResponse function)
 
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export const chatBot = async (req, res) => {
   try {
     const { message } = req.body;
 
+    if (!message) {
+      return res.status(400).json({ error: "Message is required" });
+    }
+
+    // Use Gemini model directly, NOT generateResponse()
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash-latest",
     });
 
     const result = await model.generateContent(message);
 
-    res.json({ reply: result.response.text() });
+    const botReply = result.response.text();
+
+    return res.json({ reply: botReply });
 
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    res.status(500).json({ error: error.message });
+    console.error("Chatbot Route Error:", error);
+    return res.status(500).json({ error: error.message });
   }
 };
+
 
 
 
