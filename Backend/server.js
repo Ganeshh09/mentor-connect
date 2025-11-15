@@ -13,6 +13,8 @@ dotenv.config();
 
 const port = process.env.PORT || 3000;
 
+
+
 const app = express();
 const jwtpassword = process.env.jwtpassword;
 const server = http.createServer(app);
@@ -22,34 +24,44 @@ const allowedOrigins = [
   "https://mentor-connect-lake.vercel.app",
   "http://localhost:5173",
   
+ // keep this for local testing
 ];
 
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Origin", "https://mentor-connect-lake.vercel.app");
   res.header("Access-Control-Allow-Credentials", "true");
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
 
 
-// Handle 
+// Handle preflight requests globally (important for Render)
 app.options("*", cors());
 
 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: [
+      "https://mentor-connect-lake.vercel.app",
+      "http://localhost:5173"
+    ],
     methods: ["GET", "POST"],
-    credentials: true,
+    credentials: true
   },
+  transports: ["websocket", "polling"]
 });
+
 
 
 // middlewares

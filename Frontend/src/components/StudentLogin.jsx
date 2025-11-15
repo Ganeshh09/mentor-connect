@@ -21,7 +21,7 @@ const StudentLogin = () => {
     );
     if (response.data) {
       alert("logged in successfully ");
-      navigate("/");
+      navigate("/mentee-profile");
     } else {
       alert("not logged in ");
     }
