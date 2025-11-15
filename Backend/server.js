@@ -267,31 +267,40 @@ io.on("connection", (socket) => {
   });
 });
 
-// ================================================================
 
 // server.js (Corrected generateResponse function)
-
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function generateResponse(query) {
-  const systemInstruction = `You are a friendly mentor guiding a beginner programmer. 
-  Explain clearly and encourage them. Keep it under 150 words, use short sentences and emojis.`;
+  const systemInstruction = `
+    You are a friendly mentor guiding a beginner programmer. 
+    Explain clearly and keep answers under 150 words.
+  `;
 
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // ✅ Correct structure for SDK (use plain string, not {role, parts})
     const prompt = `${systemInstruction}\nUser: ${query}`;
 
+    // Correct server-side SDK usage
     const result = await model.generateContent(prompt);
 
-    return result.response.text();
+    const responseText =
+      result?.response?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!responseText) {
+      console.error("Gemini response missing:", result);
+      return "Sorry, I couldn’t generate a response. Try again!";
+    }
+
+    return responseText;
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    throw new Error("Failed to get AI response from Gemini");
+    console.error("Gemini API Error:", error.response?.data || error.message);
+    return "AI is currently unavailable. Try again later!";
   }
 }
+
 
 // ✅ /chat-bot route
 app.post("/chat-bot", async (req, res) => {
@@ -376,50 +385,7 @@ const MernMessage = mongoose.model("MernMessage", {
   },
 });
 
-// const io = new Server(server, {
-//   cors: {
-//     origin: [
-//       "https://mentor-connect-lake.vercel.app",
-//       "http://localhost:5173"
-//     ],
-//     methods: ["GET", "POST"],
-//     credentials: true
-//   },
-//   transports: ["websocket"]
-// });
 
-// io.on("connection", (socket) => {
-//   socket.on("joinroom", (roomId) => {
-//     socket.join(roomId);
-//   });
-
-//   socket.on(
-//     "message",
-//     async ({ roomId: roomId, text: message, sender: user }) => {
-//       const newMessage = new MernMessage({
-//         roomId: roomId,
-//         text: message,
-//         sender: user,
-//       });
-//       newMessage.save();
-//       io.to(roomId).emit("newmessage", {
-//         roomId: roomId,
-//         text: message,
-//         sender: user,
-//       });
-//     }
-//   );
-
-//   socket.on("disconnect", () => {});
-// });
-// ================= SOCKET.IO SETUP (PLACE HERE) =================
-
-
-
-// app.get("/get-messages", async (req, res) => {
-//   const messages = await MernMessage.find();
-//   res.send(messages);
-// });
 app.get("/get-messages/:roomId", async (req, res) => {
   try {
     const { roomId } = req.params;
