@@ -3,7 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { useNavigate, useParams } from "react-router-dom";
 
-const socket = io("https://mentor-connect-api.onrender.com");
+const socket = io("https://mentor-connect-api.onrender.com", {
+  transports: ["websocket"],
+  withCredentials: true,
+  extraHeaders: {
+    "Access-Control-Allow-Origin": "https://mentor-connect-lake.vercel.app",
+  },
+});
+
 
 const Message = () => {
   const [messages, setMessages] = useState([]);
