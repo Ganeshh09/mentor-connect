@@ -272,35 +272,24 @@ io.on("connection", (socket) => {
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-async function generateResponse(query) {
-  const systemInstruction = `
-    You are a friendly mentor guiding a beginner programmer. 
-    Explain clearly and keep answers under 150 words.
-  `;
-
+export const chatBot = async (req, res) => {
   try {
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+    const { message } = req.body;
 
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash-latest",
+    });
 
-    const prompt = `${systemInstruction}\nUser: ${query}`;
+    const result = await model.generateContent(message);
 
-    // Correct server-side SDK usage
-    const result = await model.generateContent(prompt);
+    res.json({ reply: result.response.text() });
 
-    const responseText =
-      result?.response?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!responseText) {
-      console.error("Gemini response missing:", result);
-      return "Sorry, I couldn’t generate a response. Try again!";
-    }
-
-    return responseText;
   } catch (error) {
-    console.error("Gemini API Error:", error.response?.data || error.message);
-    return "AI is currently unavailable. Try again later!";
+    console.error("Gemini API Error:", error);
+    res.status(500).json({ error: error.message });
   }
-}
+};
+
 
 
 // ✅ /chat-bot route
