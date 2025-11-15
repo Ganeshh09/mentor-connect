@@ -11,7 +11,7 @@ import axios from "axios";
 
 dotenv.config();
 
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 
 
@@ -279,7 +279,8 @@ async function generateResponse(query) {
   `;
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+
 
     const prompt = `${systemInstruction}\nUser: ${query}`;
 
@@ -560,6 +561,6 @@ app.post("/get-data_OAuth", async (req, res) => {
 });
 
 
-server.listen(port, () => {
-  console.log(`server connected successfully on ${port}`);
+server.listen(PORT, () => {
+  console.log(`server connected successfully on ${PORT}`);
 });
