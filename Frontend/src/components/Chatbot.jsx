@@ -17,7 +17,7 @@ export default function Chatbot() {
       { query: input },
       { withCredentials: true }
     );
-    const result = response.data;
+    const result = response.data.response;
     const botReply = { text: result, sender: "bot" };
     setMessages((prev) => [...prev, botReply]);
   };
