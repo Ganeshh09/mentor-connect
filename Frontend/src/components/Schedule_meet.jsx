@@ -1,4 +1,3 @@
-import React from "react";
 import { InlineWidget } from "react-calendly";
 import { useLocation } from "react-router-dom";
 

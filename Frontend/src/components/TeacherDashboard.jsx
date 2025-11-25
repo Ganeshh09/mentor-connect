@@ -87,12 +87,7 @@ const TeacherDashboard = ({ username }) => {
               Home
             </button>
 
-            <button
-              className="bg-green-600 text-white h-10 px-4 rounded-xl cursor-pointer mb-3 hover:bg-green-700"
-              onClick={handleProfile}
-            >
-              Profile
-            </button>
+      
 
             <button
               className="bg-gray-700 text-white h-10 px-4 rounded-xl cursor-pointer hover:bg-gray-800"

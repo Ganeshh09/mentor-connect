@@ -13,12 +13,20 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
-
+app.set("trust proxy", 1);
 
 const app = express();
 const jwtpassword = process.env.jwtpassword;
 const server = http.createServer(app); 
  
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://mentor-connect-lake.vercel.app");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  next();
+});
+
 
 const allowedOrigins = [
   "https://mentor-connect-lake.vercel.app",
@@ -524,7 +532,7 @@ app.get("/check-teacher-cookie", (req, res) => {
   res.json({ isTeacher: !!teacher_token });
 });
 
-
+app.options("/get-data_OAuth", cors());
 
 app.post("/get-data_OAuth", async (req, res) => {
   const code = req.body.code;
