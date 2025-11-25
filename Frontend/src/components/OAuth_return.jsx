@@ -24,6 +24,9 @@ const OAuth_return = () => {
         { code: modifiedcode },
         {
           withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },  
         }
       );
       settoken(response.data.access_token);

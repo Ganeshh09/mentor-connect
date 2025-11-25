@@ -13,19 +13,13 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
-app.set("trust proxy", 1);
 
 const app = express();
 const jwtpassword = process.env.jwtpassword;
 const server = http.createServer(app); 
- 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://mentor-connect-lake.vercel.app");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  next();
-});
+
+
+app.set("trust proxy", 1);
 
 
 const allowedOrigins = [
@@ -44,6 +38,16 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 }));
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://mentor-connect-lake.vercel.app");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 
 
@@ -532,40 +536,39 @@ app.get("/check-teacher-cookie", (req, res) => {
   res.json({ isTeacher: !!teacher_token });
 });
 
-app.options("/get-data_OAuth", cors());
+
 
 app.post("/get-data_OAuth", async (req, res) => {
-  const code = req.body.code;
-  const client_id = process.env.client_id;
-  const client_secret = process.env.client_secret;
-  const redirect_uri = "https://mentor-connect-lake.vercel.app/get-data_OAuth";
+  res.header("Access-Control-Allow-Origin", "https://mentor-connect-lake.vercel.app");
+  res.header("Access-Control-Allow-Credentials", "true");
 
   try {
+    const code = req.body.code;
+    const client_id = process.env.client_id;
+    const client_secret = process.env.client_secret;
+    const redirect_uri = "https://mentor-connect-lake.vercel.app/get-data_OAuth";
+
     const formdata = new URLSearchParams();
     formdata.append("code", code);
     formdata.append("client_id", client_id);
     formdata.append("client_secret", client_secret);
     formdata.append("redirect_uri", redirect_uri);
     formdata.append("grant_type", "authorization_code");
+
     const response = await axios.post(
       "https://auth.calendly.com/oauth/token",
       formdata,
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
+      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     );
-    console.log("Token exchange successful:", response.data);
-    res.json(response.data);
+
+    return res.json(response.data);
+
   } catch (error) {
-    console.error(
-      "Token exchange failed:",
-      error.response?.data || error.message
-    );
-    res.status(500).json({ error: error.response?.data || "Unknown error" });
+    console.error("OAuth Error:", error);
+    return res.status(500).json({ error: "OAuth token exchange failed" });
   }
 });
+
 
 
 server.listen(PORT, () => {
