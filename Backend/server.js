@@ -13,7 +13,7 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
-
+const cors = require("cors");
 const app = express();
 const jwtpassword = process.env.jwtpassword;
 const server = http.createServer(app); 
